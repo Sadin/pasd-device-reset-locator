@@ -4,14 +4,24 @@ import sys
 
 import pandas as pd
 
+
+def csvcheck(filename: str) -> bool:
+    if filename.rpartition('.')[2] != 'csv':
+        return False
+    return True
+
+
 if __name__ == '__main__':
     if len(sys.argv) != 3:
         raise ValueError(
             'application requires 2 filepaths for input,' +
             'Prime CSV path followed by Intune CSV path.')
 
-    primePath = sys.argv[1]
-    intunePath = sys.argv[2]
+    primePath = sys.argv[1].strip()
+    intunePath = sys.argv[2].strip()
+
+    if not csvcheck(primePath) or not csvcheck(intunePath):
+        raise ValueError('One of the files is not a csv')
 
     primeData = pd.read_csv(primePath)
     intuneDada = pd.read_csv(intunePath)
