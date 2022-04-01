@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+from datetime import date
 
 import pandas as pd
 
@@ -26,15 +27,31 @@ if __name__ == '__main__':
     # prime data has header information that can be ignored,
     # start import at row index 8
     primeData = pd.read_csv(paths[0], header=8)
-    intuneDada = pd.read_csv(paths[1])
+    intuneData = pd.read_csv(paths[1])
+    columnFilter = ['Vendor', 'IP Address', 'AP Name',
+                    '802.11 State', 'SSID', 'Profile', 'Protocol']
 
     # print paths for debug
     print(f'Prime(wireless): {paths[0]}')
     print(f'Endpoint(Intune): {paths[1]}')
 
+    # filter out colons from MAC addresses in prime data
+
+    primeData['MAC Address'] = primeData['MAC Address'].str.replace(
+        ':', '').str.upper()
+
+    # rename intuneData MAC Address column to match for merge
+    intuneData = intuneData.rename(columns={'Wi-Fi MAC': 'MAC Address'})
+
     # print prime column names for debug
-    for col in primeData.columns:
+    for col in intuneData.columns:
         print(col)
 
-    # filter out colons from MAC addresses in prime data
-    primeData['MAC Address'] = primeData['MAC Address'].str.replace(':', '')
+    # merge dataframes on MAC Address
+    mergedData = pd.merge(primeData, intuneData,
+                          on='MAC Address').drop(columns=columnFilter)
+
+    print(primeData['MAC Address'])
+
+    mergedData.to_excel(
+        f'export_{date.today().strftime("%b-%d-%Y")}.xlsx', index=False)
