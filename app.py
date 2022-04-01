@@ -37,22 +37,16 @@ if __name__ == '__main__':
     print(f'Endpoint(Intune): {paths[1]}')
 
     # filter out colons from MAC addresses in prime data
-
     primeData['MAC Address'] = primeData['MAC Address'].str.replace(
         ':', '').str.upper()
 
     # rename intuneData MAC Address column to match for merge
     intuneData = intuneData.rename(columns={'Wi-Fi MAC': 'MAC Address'})
 
-    # print prime column names for debug
-    for col in intuneData.columns:
-        print(col)
-
     # merge dataframes on MAC Address
     mergedData = pd.merge(primeData, intuneData,
                           on='MAC Address').drop(columns=columnFilter)
 
-    print(primeData['MAC Address'])
-
+    # export data
     mergedData.to_excel(
         f'export_{date.today().strftime("%b-%d-%Y")}.xlsx', index=False)
