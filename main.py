@@ -17,14 +17,21 @@ if __name__ == '__main__':
             'application requires 2 filepaths for input,' +
             'Prime CSV path followed by Intune CSV path.')
 
-    primePath = sys.argv[1].strip()
-    intunePath = sys.argv[2].strip()
+    paths = (sys.argv[1].strip(), sys.argv[2].strip())
 
-    if not csvcheck(primePath) or not csvcheck(intunePath):
+    if not csvcheck(paths[0]) or not csvcheck(paths[1]):
         raise ValueError('One of the files is not a csv')
 
-    primeData = pd.read_csv(primePath)
-    intuneDada = pd.read_csv(intunePath)
+    # import CSVs from input paramaters as dataframes
+    # prime data has header information that can be ignored,
+    # start import at row index 8
+    primeData = pd.read_csv(paths[0], header=8)
+    intuneDada = pd.read_csv(paths[1])
 
-    print(f'Prime(wireless): {primePath}')
-    print(f'Endpoint(Intune): {intunePath}')
+    # print paths for debug
+    print(f'Prime(wireless): {paths[0]}')
+    print(f'Endpoint(Intune): {paths[1]}')
+
+    # print prime column names for debug
+    for col in primeData.columns:
+        print(col)
