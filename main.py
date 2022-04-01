@@ -29,7 +29,8 @@ if __name__ == '__main__':
     primeData = pd.read_csv(paths[0], header=8)
     intuneData = pd.read_csv(paths[1])
     columnFilter = ['Vendor', 'IP Address', 'AP Name',
-                    '802.11 State', 'SSID', 'Profile', 'Protocol']
+                    '802.11 State', 'SSID', 'Profile', 'Protocol',
+                    'AP Map Location', 'OS']
 
     # print paths for debug
     print(f'Prime(wireless): {paths[0]}')
