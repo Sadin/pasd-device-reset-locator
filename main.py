@@ -35,3 +35,6 @@ if __name__ == '__main__':
     # print prime column names for debug
     for col in primeData.columns:
         print(col)
+
+    # filter out colons from MAC addresses in prime data
+    primeData['MAC Address'] = primeData['MAC Address'].str.replace(':', '')
