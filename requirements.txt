@@ -1,3 +1,4 @@
 pandas
 numpy
 pre-commit
+openpyxl

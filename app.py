@@ -37,16 +37,36 @@ if __name__ == '__main__':
     print(f'Endpoint(Intune): {paths[1]}')
 
     # filter out colons from MAC addresses in prime data
+    print('Filter out semicolons for merge...')
     primeData['MAC Address'] = primeData['MAC Address'].str.replace(
         ':', '').str.upper()
+    print('Rename "Last Association Time" column to "Last Seen"...')
+    # rename last association time due to lengthy name
+    primeData = primeData.rename(
+        columns={'Last Association Time': 'Last Seen'})
+    primeData['Last Seen'] = primeData['Last Seen'].str.replace(
+        'EST', '')
 
+    print('Rename "Wi-Fi MAC" column to "MAC Address"...')
     # rename intuneData MAC Address column to match for merge
     intuneData = intuneData.rename(columns={'Wi-Fi MAC': 'MAC Address'})
 
+    print('Inner join on MAC Address...')
     # merge dataframes on MAC Address
     mergedData = pd.merge(primeData, intuneData,
                           on='MAC Address').drop(columns=columnFilter)
 
+    mergedData = mergedData.sort_values('Last check-in')
+    mergedData['Last Association Time'] = pd.to_datetime(
+        mergedData['Last Association Time'])
+    mergedData['Last check-in'] = pd.to_datetime(mergedData['Last check-in'])
+
+    filteredData = mergedData[mergedData['Last check-in']
+                              < mergedData['Last Association Time']]
+
+    # print column types for debugging
+    # print(filteredData.dtypes)
+
     # export data
-    mergedData.to_excel(
+    filteredData.to_excel(
         f'export_{date.today().strftime("%b-%d-%Y")}.xlsx', index=False)
