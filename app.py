@@ -57,12 +57,12 @@ if __name__ == '__main__':
                           on='MAC Address').drop(columns=columnFilter)
 
     mergedData = mergedData.sort_values('Last check-in')
-    mergedData['Last Association Time'] = pd.to_datetime(
-        mergedData['Last Association Time'])
+    mergedData['Last Seen'] = pd.to_datetime(
+        mergedData['Last Seen'])
     mergedData['Last check-in'] = pd.to_datetime(mergedData['Last check-in'])
 
     filteredData = mergedData[mergedData['Last check-in']
-                              < mergedData['Last Association Time']]
+                              < mergedData['Last Seen']]
 
     # print column types for debugging
     # print(filteredData.dtypes)
