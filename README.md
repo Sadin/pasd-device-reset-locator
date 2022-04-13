@@ -20,6 +20,9 @@ $ pip install -r requirements.txt
 
 ### Usage
 
+#### Python
 ```
 $ python app.py PrimeCSVPath IntuneCSVPath
 ```
+
+#### Exe
